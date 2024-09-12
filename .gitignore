@@ -1,2 +1,4 @@
 /tencentcloud-sdk-cpp
+/.vscode
+*.a
 .gitignore
