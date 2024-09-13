@@ -48,7 +48,7 @@ size_t getRequestText(char* ptr, size_t size, size_t nmemb, void* stream){
     return length;
 }
 
-std::string request_baiduapi(){
+int request_baiduapi(std::string json){
     CURL* curl;
     CURLcode re;
     std::string content;
@@ -62,30 +62,83 @@ std::string request_baiduapi(){
         #ifdef DEBUG
         std::cout << content << std::endl;
         #endif
-        return content;
+        json = content;
+        return OK;
     }else{
         curl_easy_cleanup(curl);
-        return "";
+        json = "";
+        return ERROR;
     }
 }
 
-int main(){
-    std::string json;
+int query_ip(std::string &ip){
+    ip = "";
     JsonAnalyze analyzer;
     DataContainer* json_data_p;
     DataContainer json_data;
+    std::string json;
+    int re;
 
-    json = request_baiduapi();
+    re = request_baiduapi(json);
+    if (re!=OK) return ERROR;
     analyzer.AnalyzeString(json);
     json_data_p = analyzer.successAnalyze();
+    if (json_data_p==NULL) return ERROR;
     json_data = *json_data_p;
 
     std::string* request_code = (std::string*)(json_data["code"].data);
     if (request_code==NULL||*request_code!="Success"){
+        #ifdef DUBUG
         std::cout << "Query public ip failed\n";
+        #endif
+        return ERROR;
     }else{
-        std::string ip = *(std::string*)(json_data["ip"].data);
+        #ifdef DEBUG
         std::cout << "Queried public ip " << ip << std::endl;
+        #endif
+        ip = *(std::string*)(json_data["ip"].data);
+        return OK;
     }
-    return 0;
+}
+
+int loadConfig(std::string &SECRET_ID, std::string &SECRET_KEY, DataContainer* &Domains){
+    int re;
+    JsonAnalyze analyzer;
+    DataContainer* json_data_p;
+    DataContainer json_data;
+    std::string buffer="", json="";
+    std::ifstream configfile("DDNS-config.json");
+
+    while (std::getline(configfile, buffer)) json += buffer;
+    #ifdef DEBUG
+    std::cout << "Load config: " << json << std::endl;
+    #endif
+
+    re = analyzer.AnalyzeString(json);
+    if (re!=OK) return ERROR;
+    json_data_p = analyzer.successAnalyze();
+    if (json_data_p==NULL) return ERROR;
+    json_data = *json_data_p;
+
+    if (json_data["SECRET_ID"].data==NULL) return ERROR;
+    else SECRET_ID = *(std::string*)(json_data["SECRET_ID"].data);
+
+    if (json_data["SECRET_KEY"].data==NULL) return ERROR;
+    else SECRET_KEY = *(std::string*)(json_data["SECRET_KEY"].data);
+
+    if (json_data["Domains"].data==NULL) return ERROR;
+    else Domains = (DataContainer*)(json_data["Domains"].data);
+    
+    return OK;
+}
+
+int main(){ 
+    int re;
+    std::string SECRET_ID, SECRET_KEY;
+    DataContainer* Domains;
+    re = loadConfig(SECRET_ID, SECRET_KEY, Domains);
+    if (re!=OK){
+        std::cout << "Wrong config\n";
+        return 0; 
+    }
 }

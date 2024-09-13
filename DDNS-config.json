@@ -1,0 +1,10 @@
+{
+    "SECRET_ID":"",
+    "SECRET_KEY":"",
+    "Domains":[{
+        "Domain":"CorneliaMo.cn",
+        "SubDomain":"@",
+        "RecordId":123456789,
+        "RecordType":"A"
+    }]
+}
