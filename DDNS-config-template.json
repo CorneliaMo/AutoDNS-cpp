@@ -1,6 +1,8 @@
 {
-    "SECRET_ID":"",
-    "SECRET_KEY":"",
+    "SECRET_ID":"secret ip here",
+    "SECRET_KEY":"secret key here",
+    "region":"ap-guangzhou",
+    "query_interval":1800,
     "Domains":[{
         "Domain":"CorneliaMo.cn",
         "SubDomain":"@",

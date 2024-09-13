@@ -1,4 +1,5 @@
 /tencentcloud-sdk-cpp
 /.vscode
-*.a
 .gitignore
+*.a
+DDNS-config.json
