@@ -245,7 +245,7 @@ int main(){
         std::cout << "Time now: " << ctime(&curtime);
         while (query_ip(now_ip)!=OK) delay(30);
         while (updateDomains(now_ip, dnspod_client, Domains)!=OK) delay(30);
-        std::cout << "\n\n";
+        std::cout << "\n" << std::flush;
 
         delay(query_interval);
     }
