@@ -37,12 +37,16 @@
 #include <tencentcloud/core/Credential.h>
 #include <tencentcloud/dnspod/v20210323/DnspodClient.h>
 #include <time.h>
+#include <unistd.h>
 
 void delay(int seconds) //参数为整型，表示延时多少秒
 {
-    clock_t start = clock();
-    clock_t lay = (clock_t)seconds * CLOCKS_PER_SEC;
-    while ((clock()-start) < lay);
+   // clock_t start = clock();
+   // clock_t lay = (clock_t)seconds * CLOCKS_PER_SEC;
+   // while ((clock()-start) < lay);
+   //
+   // change to unistd.h only support linux
+   sleep(seconds);
 }
 
 size_t getRequestText(char* ptr, size_t size, size_t nmemb, void* stream){
